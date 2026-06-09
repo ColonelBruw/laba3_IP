@@ -1,4 +1,4 @@
-let theme_btn = document.getElementById('Theme');
+const theme_btn = document.getElementById('Theme');
 
 //Функция переключения темы
 function switchTheme() {

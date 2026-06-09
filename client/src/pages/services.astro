@@ -52,10 +52,10 @@ import Layout from '../layouts/Layout.astro';
             <h1 class="CallUsNumber">+1 (234) 567-8910</h1>
         </div>
     </div>
-    <form class="Modal" id="Modal" method="POST">
+    <form class="Modal" id="ModalService" method="POST">
 		<div class="ModalContent">
-			<h2></h2>
-			<span class="CloseModal">×</span>
+			<h2 id="ModalTitle"></h2>
+			<span class="CloseServiceModal">×</span>
 			<div class="ModalInput">
 				<label for="POST-date">Дата:</label>
 				<input id="InputDate" type="date" name="date" min=''required/>
@@ -64,19 +64,7 @@ import Layout from '../layouts/Layout.astro';
 				<label for="POST-time">Время:</label>
 				<input id="InputTime" type="time" name="time" min="09:00" max="19:00" required/>
 			</div>
-			<div class="ModalInput">
-				<label for="POST-name">Имя:</label>
-				<input id="InputFirstName" type="text" pattern="[а-яА-Я]*" name="first_name" placeholder="Иван" width="30" required/>
-			</div>
-            <div class="ModalInput">
-				<label for="POST-name">Фамилия:</label>
-				<input id="InputLastName" type="text" pattern="[а-яА-Я]*" name="last_name" placeholder="Иванов" width="30" required/>
-			</div>
-            <div class="ModalInput">
-				<label for="POST-phone">Телефон:</label>
-				<input id="InputPhone" type="tel" pattern="[0-9+]*" name="phone" maxlength="12" placeholder="+12345678910" required/>
-            </div>
-			<button id="SubmitButton" type="submit">Забронировать</button>
+			<button id="SubmitService" type="submit">Забронировать</button>
 		</div>
 	</form>
 </Layout>

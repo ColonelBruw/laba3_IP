@@ -1,11 +1,12 @@
 // Импортируем переменные окружения
 import { API_HOST, API_PORT } from 'astro:env/client';
 
-const modal = document.getElementById('Modal');
-const modal_btns = document.querySelectorAll('.TheService')
-const submit_btn = document.getElementById('SubmitButton');
+const modal_service = document.getElementById('ModalService');
+const service_btns = document.querySelectorAll('.TheService')
+const submit_service_btn = document.getElementById('SubmitService');
+const close_service_span = document.querySelector('.CloseServiceModal');
+
 const theme_btn = document.getElementById('Theme');
-const close_span = document.querySelector('.CloseModal');
 
 // Задание динамических пределов установления даты в форме
 // Записаться можно начиная с завтрашнего дня в интервале 3 месяцев
@@ -19,27 +20,48 @@ document.querySelector('#InputDate').min = min_input_date.toISOString().split('T
 document.querySelector('#InputDate').max = max_input_date.toISOString().split('T')[0];
 
 // Закрытие по крестику
-close_span.addEventListener('click', function() {
-    modal.style.display = 'none';
+close_service_span.addEventListener('click', function() {
+    modal_service.style.display = 'none';
 });
 
-// Отправка данных формы
-modal.onsubmit = async (event) => {
+// Функция открытия модальных окон услуг
+service_btns.forEach(btn => {
+    btn.addEventListener('click', function() {
+        let service_name = btn.querySelector('p').textContent
+        console.log(service_name)
+
+        let modal_title = document.getElementById('ModalTitle')
+
+        modal_title.textContent = service_name
+        console.log(modal_title.textContent)
+        
+        modal_service.style.display = 'block';
+    });
+  });
+
+
+// Отправка формы записи на услугу
+modal_service.onsubmit = async (event) => {
     event.preventDefault();
 
-    submit_btn.disabled = true;
+    submit_service_btn.disabled = true;
 
-    const formData = new FormData(modal);
-    const service_name = document.querySelector('.Modal h2').textContent
+    const formData = new FormData(modal_service);
+    const service_name = document.querySelector('#ModalTitle').textContent
     formData.append('service_name', service_name)
+    
+    const plainFormData = Object.fromEntries(formData.entries())
 
     console.log(formData)
+    console.log(plainFormData)
 
     try {
         // Отправка данных на FastAPI сервер
-        const response = await fetch(`http://${API_HOST}:${API_PORT}/api/submit-service-appointment`, {
+        const response = await fetch(`http://${API_HOST}:${API_PORT}/api/v1/endpoints/service-appointment`, {
             method: 'POST', 
-            body: formData
+            credentials: 'include',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(plainFormData)
         });
 
         const result = await response.json();
@@ -48,15 +70,15 @@ modal.onsubmit = async (event) => {
         if (response.ok) {
             if (result.status === "200") {
                 alert(result.message)
-                modal.reset()
-                modal.style.display = 'none'
-                submit_btn.disabled = false;
+                modal_service.reset()
+                modal_service.style.display = 'none'
+                submit_service_btn.disabled = false;
             } else {
                 alert(result.message)
-                submit_btn.disabled = false;
+                submit_service_btn.disabled = false;
             }
         } else {
-            alert("Ошибка на бекенде")
+            alert('Ошибка на бекенде: код ' + response.status)
         }
     } catch (error) {
         alert("Что-то пошло не так: " + error.message)
@@ -65,21 +87,23 @@ modal.onsubmit = async (event) => {
 
 // Закрытие по клику вне окна
 window.addEventListener('click', function(event) {
-    if (event.target === modal) {
-        modal.style.display = "none"
+    if (event.target === modal_service) {
+        modal_service.style.display = "none"
     }
 });
 
-// Функция добавляющая заголовок модальному окну
-modal_btns.forEach(btn => {
+// Функция открытия модальных окон услуг
+service_btns.forEach(btn => {
     btn.addEventListener('click', function() {
         let service_name = btn.querySelector('p').textContent
+        console.log(service_name)
 
-        let modal_title = document.querySelector('.ModalContent h2')
+        let modal_title = document.getElementById('ModalTitle')
 
         modal_title.textContent = service_name
+        console.log(modal_title.textContent)
         
-        modal.style.display = 'block';
+        modal_service.style.display = 'block';
     });
   });
 

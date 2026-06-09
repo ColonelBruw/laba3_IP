@@ -3,6 +3,10 @@
         <img id="HeaderImg" src="/carfast.png">
     </a>
     <p id="Schedule">График работы: 9:00 - 19:00, Пн-Пт</p>
+	<p id="NameHolder"></p>
+    <a id="RegistrationButton">Зарегистрироваться</a>
+    <a id="LoginButton">Войти</a>
+	<a id="LogoutButton">Выйти</a>
     <nav>
         <a class="Navigation" href="/">Главная</a>
         <a class="Navigation" href="about">О нас</a>
@@ -11,4 +15,63 @@
             <img id="ThemeIcon" src="/moon.png">
         </a>
     </nav>
+    <form class="Modal" id="ModalReg" method="POST">
+		<div class="ModalContent">
+			<h2>Регистрация</h2>
+			<span class="CloseRegModal">×</span>
+			<div class="ModalInput">
+				<label for="POST-firstname">Имя:</label>
+				<input id="InputFirstName" type="text" pattern="[а-яА-Я]*" name="first_name" placeholder="Иван" title="Только русские буквы" width="30" required/>
+			</div>
+			<div class="ModalInput">
+				<label for="POST-lastname">Фамилия:</label>
+				<input id="InputLastName" type="text" pattern="[а-яА-Я]*" name="last_name" placeholder="Иванов" title="Только русские буквы" width="30" required/>
+			</div>
+			<div class="ModalInput">
+				<label for="POST-phone">Телефон:</label>
+				<input id="InputPhone" type="tel" pattern="[0-9+]*" name="phone" maxlength="12" placeholder="+12345678910" required/>
+			</div>
+			<div class="ModalInput">
+				<label for="POST-email">E-mail:</label>
+				<input id="InputEmail" type="email" pattern="[0-9A-Za-z@.]*" name="email" placeholder="example@mail.ru" required/>
+			</div>
+            <div class="ModalInput">
+				 <label for="POST-password">Пароль:</label> <!--8+ символов: заглавные, строчные буквы, цифры и спецсимволы (@$!%*?&) -->
+				<input id="InputPassword" type="password" pattern="[A-Za-z0-9@$!%*?&]{8,}" name="password" minlength="8" maxlength="30" placeholder="Ваш пароль" title="8-30 символов: буквы, цифры или @ $ ! % * ? &" required/>
+			</div>
+            <div class="ModalInput">
+				<label id="ConfirmPasswordLabel" for="POST-confirm-password">Подтвердите пароль:</label>
+				<input id="ConfirmPassword" type="password" pattern="[A-Za-z0-9@$!%*?&]{8,}" name="confirm_password" minlength="8" maxlength="30" placeholder="Ваш пароль" title="8-30 символов: буквы, цифры или @ $ ! % * ? &" required/>
+			</div>
+			<input id="SubmitRegistration" type="submit" value="Отправить">
+		</div>
+	</form>
+
+    <form class="Modal" id="ModalLogin" method="POST">
+		<div class="ModalContent">
+			<h2>Вход</h2>
+			<span class="CloseLoginModal">×</span>
+			<div class="ModalInput">
+				<label for="POST-name">Имя:</label>
+				<input id="InputFirstName" type="text" pattern="[а-яА-Я]*" name="first_name" placeholder="Иван" width="30" required/>
+			</div>
+			<div class="ModalInput">
+				<label for="POST-name">Фамилия:</label>
+				<input id="InputLastName" type="text" pattern="[а-яА-Я]*" name="last_name" placeholder="Иванов" width="30" required/>
+			</div>
+			<div class="ModalInput">
+				<label for="POST-password">Пароль:</label>
+				<input id="InputPassword" type="password" pattern="[A-Za-z0-9@$!%*?&]{8,}" name="password" minlength="8" maxlength="30" placeholder="Ваш пароль" title="8-30 символов: буквы, цифры или @ $ ! % * ? &" required/>
+			</div>
+			<input id="SubmitLogin" type="submit" value="Отправить">
+		</div>
+	</form>
+
+	<form class="Modal" id="ModalLogout" method="POST">
+		<div class="ModalContent">
+			<h2>Вы уверены что хотите выйти?</h2>
+			<span class="CloseLogoutModal">×</span>
+			<input id="SubmitLogout" type="submit" value="Выйти">
+		</div>
+	</form>
 </header>

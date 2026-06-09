@@ -9,10 +9,11 @@ services:
     environment:
       - DB_HOST=${DB_HOST} 
       - DB_PORT=${DB_PORT}
+      - DB_DRIVER=${DB_DRIVER}
+      - DB_DIALECT=${DB_DIALECT}
       - DB_USER=${DB_USER}
       - DB_PASSWORD=${DB_PASSWORD}
       - DB_NAME=${DB_NAME}
-      - PUBLIC_API_URL=http://${API_HOST}:${API_PORT}/api
     depends_on:
       db:
         condition: service_started
@@ -25,13 +26,17 @@ services:
     ports:
       - "${API_PORT}:${API_PORT}"
     environment:
-      - DB_HOST=${DB_HOST} 
+      - DB_HOST=${DB_HOST}
       - DB_PORT=${DB_PORT}
+      - DB_DRIVER=${DB_DRIVER}
+      - DB_DIALECT=${DB_DIALECT}
       - DB_USER=${DB_USER}
       - DB_PASSWORD=${DB_PASSWORD}
       - DB_NAME=${DB_NAME}
       - DB_MIN_CONNS=${DB_MIN_CONNS}
       - DB_MAX_CONNS=${DB_MAX_CONNS}
+      - JWT_SECRET_KEY=${JWT_SECRET_KEY}
+      - JWT_ALGORITHM=${JWT_ALGORITHM}
     depends_on:
       db:
         condition: service_started
@@ -48,6 +53,7 @@ services:
       POSTGRES_DB: ${DB_NAME}
     volumes:
       - ./db-data:/var/lib/postgresql
+      - ./init-db-scripts:/docker-entrypoint-initdb.d
     ports:
       - "${DB_PORT}:${DB_PORT}"
 

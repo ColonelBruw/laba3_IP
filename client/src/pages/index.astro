@@ -87,40 +87,24 @@ import Layout from '../layouts/Layout.astro';
 			<img id="EmploymentImg" src="mainemployement.jpg">
 			<a id="EmploymentButton" href="#">Оставить заявку</a>
 		</div>
-	 <form class="Modal" id="Modal" method="POST">
-		<div class="ModalContent">
-			<h2>Форма для трудоустройства</h2>
-			<span class="CloseModal">×</span>
-			<div class="ModalInput">
-				<label for="POST-name">Имя:</label>
-				<input id="InputFirstName" type="text" pattern="[а-яА-Я]*" name="first_name" placeholder="Иван" width="30" required/>
+		<form class="Modal" id="ModalJob" method="POST">
+			<div class="ModalContent">
+				<h2>Форма для трудоустройства</h2>
+				<span class="CloseJobModal">×</span>
+				<div class="ModalInput">
+					<label for="POST-pos">Должность:</label>
+					<select id="InputPosition" name="pos">
+						<option value="none">-- Выберите желаемую должность --</option>
+						<option value="mechanic">Автомеханик</option>
+						<option value="bodyworker">Кузовщик</option>
+						<option value="washer">Автомойщик</option>
+						<option value="storekeeper">Кладовщик</option>
+						<option value="manager">Менеджер</option>
+						<option value="administrator">Администратор</option>
+					</select>
+				</div>
+				<input id="SubmitJob" type="submit" value="Отправить">
 			</div>
-			<div class="ModalInput">
-				<label for="POST-name">Фамилия:</label>
-				<input id="InputLastName" type="text" pattern="[а-яА-Я]*" name="last_name" placeholder="Иванов" width="30" required/>
-			</div>
-			<div class="ModalInput">
-				<label for="POST-phone">Телефон:</label>
-				<input id="InputPhone" type="tel" pattern="[0-9+]*" name="phone" maxlength="12" placeholder="+12345678910" required/>
-			</div>
-			<div class="ModalInput">
-				<label for="POST-email">E-mail:</label>
-				<input id="InputEmail" type="email" pattern="[0-9A-Za-z@.]*" name="email" placeholder="example@mail.ru" required/>
-			</div>
-			<div class="ModalInput">
-				<label for="POST-pos">Должность:</label>
-				<select id="InputPosition" name="pos">
-					<option value="none">-- Выберите желаемую должность --</option>
-					<option value="mechanic">Автомеханик</option>
-					<option value="bodyworker">Кузовщик</option>
-					<option value="washer">Автомойщик</option>
-					<option value="storekeeper">Кладовщик</option>
-					<option value="manager">Менеджер</option>
-					<option value="administrator">Администратор</option>
-				</select>
-			</div>
-			<input id="SubmitButton" type="submit" value="Отправить">
-		</div>
-	</form>
+		</form>
 	</div>
 </Layout>

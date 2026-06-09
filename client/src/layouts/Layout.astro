@@ -19,14 +19,18 @@ const stylesheet_path = "/src/styles/" + stylesheet + ".css"
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width" />
 		<link rel="icon" type="image" href="/favicon.png" />
+		<link rel="stylesheet" href="/src/styles/general.css">
 		<link rel="stylesheet" href={stylesheet_path}>
-		<!-- <meta name="generator" content={Astro.generator} /> -->
+		<link rel="stylesheet" href="/src/styles/header.css">
+		<link rel="stylesheet" href="/src/styles/footer.css">
 		<title>{title}</title>
 	</head>
 	<body>
 		<Header />
 		<slot />
 		<Footer />
+		<Script script='auth_check'/>
+		<Script script='header'/>
 		<Script script={script}/>
 	</body>
 </html>

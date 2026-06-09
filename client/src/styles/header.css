@@ -1,0 +1,131 @@
+header{
+    display: flex;
+    justify-content: space-between;
+    box-sizing: border-box;
+}
+
+#Schedule, #NameHolder{
+    margin: auto;
+}
+
+nav{
+    display: flex;
+    /* padding: 0 2%; */
+    /* display: inline-block; */
+    width: 20%;
+    /* background-color: #478AC9; */
+    text-align: center;
+}
+
+nav a{
+    margin: auto;
+    /* margin-bottom: 5%; */
+    color: var(--font-color);
+    /* width: 20%; */
+    /* background-color: #adcce9; */
+}
+
+nav a img {
+    filter: brightness(1);
+    width: calc(1em + 3vw);
+    display: inline;
+}
+
+#RegistrationButton{
+    margin: auto;
+    width: fit-content;
+    font-size: calc(0.2em + 1vw);
+    background-color: #478AC9;
+    text-align: center;
+    padding: 1% 2%;
+    text-transform: uppercase;
+    color: #FFFFFF;
+    font-weight: bold;
+    display: none;
+}
+
+#LoginButton{
+    margin: auto;
+    width: fit-content;
+    background-color: #478AC9;
+    text-align: center;
+    padding: 1% 2%;
+    text-transform: uppercase;
+    color: #FFFFFF;
+    font-weight: bold;
+    display: none;
+}
+
+#LogoutButton{
+    margin: auto;
+    background-color: #478AC9;
+    text-align: center;
+    padding: 1% 2%;
+    text-transform: uppercase;
+    color: #FFFFFF;
+    font-weight: bold;
+    display: none;
+}
+
+#HeaderImg{
+    filter: brightness(1.5);
+    width: fit-content;
+    max-width: 100%;
+    max-height: 100%;
+}
+
+#HeaderImgLink{
+    width: 20%;
+    margin: auto 2%;
+}
+
+.Modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.5);
+    z-index: 4;
+    text-align: center;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#ConfirmPasswordLabel {
+    text-align: left;
+}
+
+.ModalContent {
+    background-color: var(--bg-color);
+    color: var(--font-color);
+    margin: 15% auto;
+    padding: 20px;
+    width: 70%;
+    max-width: 500px;
+    position: relative;
+}
+
+.ModalInput {
+    margin: 2% 5%;
+    display: flex;
+    justify-content: space-between;
+}
+
+.ModalInput input, select {
+    width: 70%;
+}
+
+span {
+    position: absolute;
+    right: 20px;
+    top: 20px;
+    cursor: pointer;
+    font-size: 25px;
+}
+
+.Modal input[type="submit"] {
+    width: 30%;
+    margin: 2%;
+}

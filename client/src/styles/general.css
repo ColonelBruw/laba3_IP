@@ -1,0 +1,68 @@
+:root {
+    /* Переменные для светлой темы (по умолчанию) */
+    --font-color: #000000;
+    --bg-color: #ffffff;
+    --color1: #adcce9;
+    --color2: #E9F2FA;
+    --footer-color: #333333;
+    --filter: brightness(1);
+    }
+
+    /* Переменные для темной темы */
+    [data-theme="dark"] {
+    --font-color: #ffffffda;
+    --bg-color: #161616;
+    --color1: #161331;
+    --color2: #29254e;
+    --footer-color: #000000;
+    --filter: brightness(0.75);
+    }
+
+body{
+    font-family: 'Arial', 'Verdana', sans-serif;
+    background-color: var(--bg-color);
+    color: var(--font-color);
+    transition: all 0.3s ease;
+}
+
+h2{
+    font-size: calc(0.2em + 3vw);
+}
+
+h3{
+    font-size: calc(0.2em + 3vw);
+}
+
+p{
+    font-size: calc(0.2em + 1vw);
+}
+
+h4{
+    font-size: calc(0.2em + 1vw);
+}
+
+li{
+    font-size: calc(0.2em + 1vw);
+}
+
+a{
+    text-decoration: none;
+    font-size: calc(0.2em + 1vw);
+}
+
+label {
+    font-size: calc(0.3em + 1vw);
+}
+
+input {
+    font-size: calc(0.1em + 1vw);
+}
+
+img {
+    filter: var(--filter);
+}
+
+a:hover {
+    transition: transform 0.3s ease;
+    transform: scale(1.05);
+}

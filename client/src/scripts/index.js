@@ -1,64 +1,68 @@
 // Импортируем переменные окружения
 import { API_HOST, API_PORT } from 'astro:env/client';
 
-const modal = document.getElementById('Modal');
-const modal_btn = document.getElementById('EmploymentButton');
-const submit_btn = document.getElementById('SubmitButton');
+const modal_job = document.getElementById('ModalJob');
+const employment_btn = document.getElementById('EmploymentButton');
+const submit_job_btn = document.getElementById('SubmitJob');
+const close_employment_span = document.querySelector('.CloseJobModal');
+
 const theme_btn = document.getElementById('Theme');
-const close_span = document.querySelector('.CloseModal');
 
 // Открытие формы
-modal_btn.addEventListener('click', function() {
-    modal.style.display = 'block'
+employment_btn.addEventListener('click', function() {
+    modal_job.style.display = 'block'
 });
 
 // Закрытие формы по крестику
-close_span.addEventListener('click', function() {
-    modal.style.display = 'none'
+close_employment_span.addEventListener('click', function() {
+    modal_job.style.display = 'none'
 });
 
 // Отправка данных формы
-modal.onsubmit = async (event) => {
+modal_job.onsubmit = async (event) => {
     event.preventDefault();
 
-    submit_btn.disabled = true;
+    submit_job_btn.disabled = true;
 
-    const formData = new FormData(modal);
+    const formData = new FormData(modal_job);
+    const plainFormData = Object.fromEntries(formData.entries())
 
-    console.log(formData)
+    console.log(formData.get('pos'))
 
     try {
         // Отправка данных на FastAPI сервер
-        const response = await fetch(`http://${API_HOST}:${API_PORT}/api/submit-job-application`, {
-            method: 'POST', 
-            body: formData
+        const response = await fetch(`http://${API_HOST}:${API_PORT}/api/v1/endpoints/job-application`, {
+            method: 'POST',
+            credentials: 'include',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(plainFormData)
         });
 
         const result = await response.json();
-        console.log(result.pos)
+        console.log(result)
 
         if (response.ok) {
             if (result.status === "200") {
                 alert(result.message)
-                modal.reset()
-                modal.style.display = 'none'
-                submit_btn.disabled = false;
+                modal_job.reset()
+                modal_job.style.display = 'none'
+                submit_job_btn.disabled = false;
             } else {
                 alert(result.message)
-                submit_btn.disabled = false;
+                submit_job_btn.disabled = false;
             }
         } else {
-            alert("Ошибка на бекенде")
+            alert("Ошибка на бекенде: код " + response.status)
         }
     } catch (error) {
-        alert("Что-то пошло не так: " + error.message)
+        alert("Что-то пошло не так: " + error)
     }
 }
 
 // Закрытие по клику вне окна
 window.addEventListener('click', function(event) {
-    if (event.target === modal) {
-        modal.style.display = 'none'
+    if (event.target === modal_job) {
+        modal_job.style.display = 'none'
     }
 });
 

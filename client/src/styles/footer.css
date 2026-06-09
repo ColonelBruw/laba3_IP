@@ -1,0 +1,59 @@
+footer{
+    color: #FFFFFF;
+    background-color: var(--footer-color);
+    display: flex;
+    justify-content: space-between;
+    padding: 2% 3%;
+}
+
+#FooterPar{
+    display: block;
+    width: 90%;
+}
+
+input{
+    width: 90%;
+    font-size: calc(0.1em + 1vw);
+}
+
+button{
+    width: 30%;
+    font-size: calc(0.1em + 1vw);
+    padding: auto 5%;
+}
+
+img.SocialIcon{
+    width: 20%;
+    min-width: 20px;
+}
+
+a.SocialLink{
+    padding: 1%;
+}
+
+.ContactsPar{
+    margin-bottom: 2%;
+    margin-top: 2%;
+}
+
+#FooterSocials{
+    width: 25%;
+    text-align: center;
+}
+
+#FooterContacts{
+    width: 25%;
+    margin-right: -5%;
+    text-align: center;
+}
+
+#FooterEnvelope{
+    width: 10%;
+    min-width: 10px;
+}
+
+#FooterMail{
+    text-transform: uppercase;
+    color: #FFFFFF;
+    font-weight: bold;
+}
