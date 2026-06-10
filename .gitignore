@@ -1,3 +1,6 @@
+# данные бд, генерируются автоматически при запуске контейнеров
+db-data/
+
 # build output
 client/dist/
 
@@ -18,7 +21,7 @@ client/pnpm-debug.log*
 # .env.production
 
 # pycache
-__pycache__
+__pycache__/
 
 # macOS-specific files
 .DS_Store
