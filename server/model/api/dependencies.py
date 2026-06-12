@@ -5,25 +5,52 @@ import os
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
 # Необходимые зависимости
-import re
+from fastapi import Depends
+from sqlalchemy.ext.asyncio import AsyncSession
 
-# DAO-класс для работы с сессиями авторизации
-from ..models.models import RegistrtationRequest
-    
-# Функция валидации имени пользователя
-def registration_data_validation(reg_request: RegistrtationRequest) -> str:
-    if not all(bool(re.match('[а-яА-Я]', name)) for name in (reg_request.first_name, reg_request.last_name)):
-        return 'Впишите имя и фамилию кириллицей, без цифр и спецсимволов'
-    
-    if not bool(re.match(r'^(\+7|8)\d{10}$', reg_request.phone)):
-        return 'Введите номер телефона в одном из форматов \
-                        +7ХХХХХХХХХХ, 8XXXXXXXXXX'
-    
-    email_pattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
-    if not bool(re.match(email_pattern, reg_request.email)):
-        return 'Введите корректную электронную почту'
-    
-    if reg_request.password != reg_request.confirm_password:
-        return 'Введенные пароли не совпадают'
-    
-    return 'Данные для регистрации успешно заполнены'
+from model.db.dao.user_dao import UserDAO
+from model.db.dao.service_appointment_dao import ServiceAppointmentDAO
+from model.db.dao.job_application_dao import JobApplicationDAO
+from model.db.db_config import get_async_sessionmaker
+
+from model.services.user_service import UserService
+from model.services.appointment_service import AppointmentService
+from model.services.job_application_service import JobApplicationService
+
+async def get_user_dao(
+    session: AsyncSession = Depends(get_async_sessionmaker)
+) -> UserDAO:
+    """Dependency для получения UserDAO для взаимодействия с пользователями"""
+    return UserDAO(session)
+
+async def get_service_appointment_dao(
+    session: AsyncSession = Depends(get_async_sessionmaker)
+) -> ServiceAppointmentDAO:
+    """Dependency для получения ServiceAppointmentDAO для взаимодействия с записями на услуги"""
+    return ServiceAppointmentDAO(session)
+
+async def get_job_application_dao(
+    session: AsyncSession = Depends(get_async_sessionmaker)
+) -> JobApplicationDAO:
+    """Dependency для получения JobApplicationDAO для взаимодействия с заявками на работу"""
+    return JobApplicationDAO(session)
+
+
+
+async def get_user_service(
+    user_dao: UserDAO = Depends(get_user_dao)
+) -> UserService:
+    """Dependency для получения сервиса User"""
+    return UserService(user_dao)
+
+async def get_appointment_service(
+    appointment_dao: AsyncSession = Depends(get_service_appointment_dao)
+) -> AppointmentService:
+    """Dependency для получения сервиса ServiceAppointment"""
+    return AppointmentService(appointment_dao)
+
+async def get_job_application_service(
+    job_application_dao: AsyncSession = Depends(get_job_application_dao)
+) -> JobApplicationService:
+    """Dependency для получения сервиса JobApplication"""
+    return JobApplicationService(job_application_dao)

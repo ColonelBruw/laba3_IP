@@ -6,18 +6,19 @@ import os
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
 from sqlalchemy.exc import SQLAlchemyError
+from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, delete
 from typing import Optional, List
-from db_base import User
+from model.db.db_base import User
 
 class UserDAO:
     
-    def __init__(self, session):
+    def __init__(self, session: AsyncSession):
         self.session = session
     
-    async def create(self, first_name: str, last_name: str, password: str,
+    async def create_user(self, first_name: str, last_name: str, password: str,
                      phone_number: Optional[str] = None, 
-                     email: Optional[str] = None) -> User:
+                     email: Optional[str] = None) -> Optional[User]:
         try:
             new_user = User(
                 first_name=first_name,
@@ -27,8 +28,6 @@ class UserDAO:
                 password=password
             )
             self.session.add(new_user)
-            await self.session.commit()
-            await self.session.refresh(new_user)
 
             return new_user
         except SQLAlchemyError as e:
@@ -84,7 +83,7 @@ class UserDAO:
             await self.session.rollback()
             raise e
     
-    async def update(self, user_id: int, **kwargs) -> Optional[User]:
+    async def update_user(self, user_id: int, **kwargs) -> Optional[User]:
         try:
             user = await self.get_by_id(user_id)
             if not user:
@@ -93,30 +92,27 @@ class UserDAO:
             for field, value in kwargs.items():
                 if hasattr(user, field):
                     setattr(user, field, value)
-            
-            await self.session.commit()
+        
             return user
         except SQLAlchemyError as e:
             await self.session.rollback()
             raise e
     
-    async def delete(self, user_id: int) -> bool:
+    async def delete_user(self, user_id: int) -> bool:
         try:
             user = await self.get_by_id(user_id)
             if not user:
                 return False
             
             await self.session.delete(user)
-            await self.session.commit()
             return True
         except SQLAlchemyError as e:
             await self.session.rollback()
             raise e
     
-    async def delete_all(self) -> int:
+    async def delete_all_users(self) -> int:
         try:
             result = await self.session.execute(delete(User))
-            await self.session.commit()
             return result.rowcount
         except SQLAlchemyError as e:
             await self.session.rollback()

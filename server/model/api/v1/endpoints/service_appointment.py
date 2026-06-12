@@ -6,11 +6,12 @@ import os
 # Добавляем директорию server в sys.path для корректного абсолютного импорта
 sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))))
 
-from fastapi import APIRouter, Cookie, Response
+from fastapi import APIRouter, Cookie, Depends
 
-from model.db.db_service_appointment_dao import ServiceAppointmentDAO
-from model.models.models import ServiceAppointmentForm
-from model.core.security import validate_session
+from model.schemas.service_appointment_form import ServiceAppointmentForm
+from model.services.appointment_service import AppointmentService
+from model.services.user_service import UserService
+from model.api.dependencies import get_appointment_service, get_user_service
 
 from model.db.db_config import get_async_sessionmaker
 
@@ -28,32 +29,18 @@ AsyncSessionMaker = get_async_sessionmaker()
 @router.post("/service-appointment")
 async def handle_service_appointment(
     form: ServiceAppointmentForm,
-    response: Response,
-    session_token: str | None = Cookie(default=None)
+    session_token: str | None = Cookie(default=None),
+    appointment_service: AppointmentService = Depends(get_appointment_service),
+    user_service: UserService = Depends(get_user_service),
     ):
-    current_session_status = validate_session(response, session_token)
-    if current_session_status['status'] != '200':
+    try:
+        current_session = await user_service.validate_session(session_token)
+        if current_session['status'] == '200':
+            new_appointment = await appointment_service.create_appointment(form, session_token)
+            return new_appointment
+        return current_session
+    except Exception as e:
         return {
-            'status': current_session_status['status'],
-            'message': current_session_status['message']
-        }
-    client_id = current_session_status['payload']['user_id']
-
-    async with AsyncSessionMaker() as db_session:
-        service_appointment_dao = ServiceAppointmentDAO(db_session)
-
-        existing_appointment = await service_appointment_dao.get_by_date_and_time(form.date, form.time)
-        if existing_appointment:
-            return {
             'status': '400',
-            'message': 'Выбранные время и дата заняты. \
-                        Пожалуйста, выберите другие время и дату'
+            'message': f'Ошибка на бекенде: {str(e)}'
         }
-
-        new_appointment = await service_appointment_dao.create(form.service_name, form.date, form.time, client_id)
-        new_appointment_id = new_appointment.id
-
-        return {
-                'status': '200',
-                'message': f'Запись под номером {new_appointment_id} на услугу {form.service_name} прошла успешно!'
-            }

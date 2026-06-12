@@ -4,13 +4,10 @@ import os
 sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 
 # Необходимые зависимости
+import re
 from passlib.context import CryptContext
-from jose import JWTError, jwt, ExpiredSignatureError
+from jose import JWTError, jwt
 from datetime import datetime, timedelta, timezone
-from fastapi import Response
-
-# DAO-класс для работы с пользователями
-from model.db.db_user_dao import UserDAO
 
 # Импорт функции создания sessionmaker'а
 from model.db.db_config import get_async_sessionmaker
@@ -56,52 +53,3 @@ def decode_access_token(token: str) -> dict:
         return payload
     except JWTError:
         return None
-    
-# Функция создания сессии
-async def create_session(first_name: str, last_name: str, response: Response) -> str:
-    async with AsyncSessionMaker() as db_session:
-        user_dao = UserDAO(db_session)
-
-        user_to_login = await user_dao.get_by_name(first_name, last_name)
-        session_token= create_access_token({'user_id': user_to_login[0].id, 'first_name': user_to_login[0].first_name, 'last_name': user_to_login[0].last_name})
-        
-        # Создаем куку сессии
-        response.set_cookie(
-            key="session_token",
-            value=session_token,
-            httponly=True,  
-            max_age=900,   # 15 минут
-            secure=False,  
-            samesite="lax", # Защищает от CSRF
-            path="/"
-        )
-        
-        return session_token
-
-# # Функция провекри валидности сессии
-def validate_session(response: Response, session_token: str | None) -> dict:
-    if session_token:
-        try:
-            payload = jwt.decode(session_token, JWT_SECRET_KEY, algorithms=[JWT_ALGORITHM])
-            exp_time = payload.get('exp')
-            if datetime.now(timezone.utc) >= datetime.fromtimestamp(exp_time, tz=timezone.utc):
-                response.delete_cookie(key='session_key')
-                return {
-                    'status': '401',
-                    'message': "Сессия истекла. Авторизуйтесь повторно"
-                }
-            return {
-                'status': '200',
-                'message': 'Сессия действительна',
-                'payload': payload
-            }
-        except ExpiredSignatureError:
-            return {
-            'status': '401',
-            'message': 'Ваша сессия истекла. Пожалуйста, авторизуйтесь повторно'
-        }
-    else:
-        return {
-            'status': '401',
-            'message': 'Для продолжения необходимо авторизоваться'
-        }

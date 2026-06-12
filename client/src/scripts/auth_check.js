@@ -16,10 +16,12 @@ export function authorizationStatusSwitch(newValue) {
 async function authorizationCheck() {
     try {
         // Отправка данных на FastAPI сервер
+        // console.log(1)
         const response = await fetch(`http://${API_HOST}:${API_PORT}/api/v1/endpoints/auth-check`, {
             method: 'POST',
             credentials: 'include',
         });
+        // console.log(2)
 
         const result = await response.json();
         console.log(result)
@@ -27,9 +29,11 @@ async function authorizationCheck() {
         if (response.ok) {
             if (result.status === '200') {
                 authorization_status = 1;
+                console.log(211)
                 return result;
             } else {
                 authorization_status = 0;
+                console.log(result.message)
             }
         } else {
             alert('Не удалось установить статус аутентификации: ' + response.message)

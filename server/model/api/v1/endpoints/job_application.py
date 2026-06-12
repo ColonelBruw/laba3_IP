@@ -5,11 +5,10 @@ import sys
 import os
 sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))))
 
-from fastapi import APIRouter, Cookie, Response
+from fastapi import APIRouter, Cookie, Depends
 
-from model.db.db_job_application_dao import JobApplicationDAO
-from model.models.models import JobApplicationForm
-from model.core.security import validate_session
+from model.schemas.job_application_form import JobApplicationForm
+from model.api.dependencies import get_job_application_service, get_user_service, JobApplicationService, UserService
 
 from model.db.db_config import get_async_sessionmaker
 
@@ -27,24 +26,18 @@ AsyncSessionMaker = get_async_sessionmaker()
 @router.post("/job-application")
 async def handle_job_application(
     form: JobApplicationForm,
-    response: Response,
+    job_application_service: JobApplicationService = Depends(get_job_application_service),
+    user_service: UserService = Depends(get_user_service),
     session_token: str | None = Cookie(default=None)
     ):
-    current_session_status = validate_session(response, session_token)
-    if current_session_status['status'] != '200':
+    try:
+        session_status = await user_service.validate_session(session_token)
+        if session_status['status'] == '200':
+            new_application = await job_application_service.create_application(form, session_token)
+            return new_application
+        return session_status
+    except Exception as e:
         return {
-            'status': current_session_status['status'],
-            'message': current_session_status['message']
-        }
-    
-    async with AsyncSessionMaker() as db_session:
-        job_application_dao = JobApplicationDAO(db_session)
-
-        applicant_id = current_session_status['payload']['user_id']
-        new_application = await job_application_dao.create(form.pos, applicant_id)
-        new_application_id = new_application.id
-
-    return {
-            'status': '200',
-            'message': f'Заявка под номером {new_application_id} успешно заполнена!'
+            'status': '400',
+            'message': f'Ошибка на бекенде: {str(e)}'
         }

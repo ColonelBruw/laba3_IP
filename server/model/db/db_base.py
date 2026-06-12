@@ -46,7 +46,6 @@ class User(Base):
 
     job_application = relationship("JobApplication", back_populates="applicant")
     service_appointment = relationship("ServiceAppointment", back_populates="client")
-    # sessions = relationship("Session", back_populates="user")
 
     extend_existing = True
 

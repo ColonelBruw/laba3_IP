@@ -78,11 +78,13 @@ modal_reg.onsubmit = async (event) => {
 
         if (response.ok) {
             if (result.status === "200") {
+                console.log(1)
                 alert(result.message)
                 modal_reg.reset()
                 modal_reg.style.display = 'none'
                 submit_reg_btn.disabled = false;
             } else {
+                console.log(2)
                 alert(result.message)
                 submit_reg_btn.disabled = false;
             };
@@ -127,6 +129,7 @@ modal_login.onsubmit = async (event) => {
                 // console.log('статус свитч ок')
             } else {
                 submit_login_btn.disabled = false;
+                console.log(111)
                 alert(result.message)
             }
             await authorizationStatusSet();

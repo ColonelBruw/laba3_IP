@@ -9,14 +9,14 @@ from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, delete
 from typing import Optional, List
-from db_base import JobApplication
+from model.db.db_base import JobApplication
 
 class JobApplicationDAO:
     
     def __init__(self, session: AsyncSession):
         self.session = session
     
-    async def create(self, position_name: str, applicant_id: int) -> JobApplication:
+    async def create_application(self, position_name: str, applicant_id: int) -> JobApplication:
         try:
             new_application = JobApplication(
                 position_name=position_name,
@@ -24,8 +24,6 @@ class JobApplicationDAO:
             )
             
             self.session.add(new_application)
-            await self.session.commit()
-            await self.session.refresh(new_application)
             
             return new_application
         except SQLAlchemyError as e:
@@ -50,7 +48,7 @@ class JobApplicationDAO:
             await self.session.rollback()
             raise e
     
-    async def update(self, application_id: int, **kwargs) -> Optional[JobApplication]:
+    async def update_application(self, application_id: int, **kwargs) -> Optional[JobApplication]:
         try:
             application = await self.get_by_id(application_id)
             if not application:
@@ -60,30 +58,27 @@ class JobApplicationDAO:
                 if hasattr(application, field):
                     setattr(application, field, value)
             
-            await self.session.commit()
             await self.session.refresh(application)
             return application
         except SQLAlchemyError as e:
             await self.session.rollback()
             raise e
     
-    async def delete(self, application_id: int) -> bool:
+    async def delete_application(self, application_id: int) -> bool:
         try:
             application = await self.get_by_id(application_id)
             if not application:
                 return False
             
             await self.session.delete(application)
-            await self.session.commit()
             return True
         except SQLAlchemyError as e:
             await self.session.rollback()
             raise e
     
-    async def delete_all(self) -> int:
+    async def delete_all_applications(self) -> int:
         try:
             result = await self.session.execute(delete(JobApplication))
-            await self.session.commit()
             return result.row_count
         except SQLAlchemyError as e:
             await self.session.rollback()
